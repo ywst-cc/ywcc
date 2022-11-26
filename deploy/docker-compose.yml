@@ -1,0 +1,69 @@
+version: "3"
+services:
+  mysql:
+    image: mysql:8.0.31
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: cc
+      MYSQL_ROOT_PASSWORD: 123456
+      LANG: C.UTF-8
+    command:
+      - "--max_connections=100000"
+    volumes:
+      - "/usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro"
+      - "./data/mysql:/var/lib/mysql"
+  freeswitch:
+    image: registry.cn-hongkong.aliyuncs.com/dream-public/freeswitch:2022-11-10-18-13-44
+    ports:
+      - "5060:5060"
+      - "5060:5060/udp"
+      - "16384-16400:16384-16400/udp"
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: cc
+      DB_USER: root
+      DB_PWD: 123456
+      EXTERNAL_IP_V4: 124.222.133.3
+      RTP_START_PORT: 16384
+      RTP_END_PORT: 16400
+    volumes:
+      - "/usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro"
+      - "./data/uploads:/run/uploads"
+      - "./data/recordings:/opt/recordings"
+    depends_on:
+      - mysql
+  redis:
+    image: redis:6.2.7-alpine
+    ports:
+      - "6379:6379"
+    command:
+      - "--requirepass"
+      - "cc"
+      - "--appendonly"
+      - "yes"
+    volumes:
+      - "/usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro"
+      - "./data/redis:/data"
+  cc:
+    image: registry.cn-beijing.aliyuncs.com/dream-public/cc:33f3af18
+    ports:
+      - "9999:9999"
+    volumes:
+      - "/usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro"
+      - "./data/uploads:/run/uploads"
+      - "./data/recordings:/opt/recordings"
+    depends_on:
+      - freeswitch
+      - mysql
+      - redis
+  front:
+    image: registry.cn-beijing.aliyuncs.com/dream-public/cc-front:26386e51
+    ports:
+      - "8080:80"
+    volumes:
+      - "/usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro"
+      - "./data/uploads:/usr/share/nginx/html/cc/uploads"
+    depends_on:
+      - "cc"
