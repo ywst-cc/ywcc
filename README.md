@@ -51,6 +51,7 @@ curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
 curl -sSL https://get.daocloud.io/docker | sh
 
 # 将deploy目录docker-compose.yml放置操作系统 /opt/cc目录下直接拉起服务即可
+# 修改yml文件中EXTERNAL_IP_V4的值为自己公网地址，若内网使用则修改为内网地址，freeswitch rtp端口默认开放较少可自行修改扩大端口范围
 docker compose -d up
 ```
 
