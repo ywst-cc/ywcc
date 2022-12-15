@@ -42,7 +42,9 @@ YWCC是一款基于FreeSWITCH开源软交换平台开发，拥有基本的分机
 
 #### 项目说明
 1.ctibar文件夹中为与第三方系统可用的电话条cti中间件以及demo页面
+
 2.deploy文件夹中为docker一键部署脚本
+
 3.项目免费无license授权可以允许10路channel
 
 #### 安装部署
