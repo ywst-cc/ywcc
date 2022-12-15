@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>电话条测试工具</title>
+  </head>
+  <body>
+    <script src="./sdk/ctibar-1.0.0.min.js"></script>
+    <script src="./lib/axios.min.js"></script>
+    <script src="./lib/dayjs.min.js"></script>
+    <script>
+      //获取授权token保存
+      let token = "";
+
+      let ctibar = null;
+
+      //websocket连接地址
+      let wsAddr = "wss://demo.cdxxzz.com/ws";
+
+      //登录授权方法
+      function auth() {
+        let username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
+        axios({
+          method: "post",
+          url: "https://demo.cdxxzz.com/api/v1/base/auth",
+          data: {
+            username: username,
+            password: password,
+          },
+        }).then(function (res) {
+          console.info(res);
+          if (res.data.code === 0) {
+            token = res.data.data.token;
+            document.getElementById("token").value = token;
+          } else {
+            document.getElementById("token").value = "";
+            alert("获取token失败!!!");
+          }
+        });
+      }
+
+      function getDate() {
+        return dayjs().format("YYYY-MM-DD HH:mm:ss.SSS");
+      }
+
+      function appendInfoLog(info, type) {
+        i++;
+        var div = document.createElement("div");
+        let str = "";
+        if (type === "send") {
+          str = ` ↑ `;
+        } else {
+          str = ` ↓ `;
+        }
+        str += `${i}: ${getDate()}:  ${info}`;
+        div.innerHTML = str;
+        var log_panel = document.getElementById("log_panel");
+        log_panel.appendChild(div);
+        log_panel.scrollTop = 9999999;
+      }
+      var i = 0;
+      function appendErrorLog(info) {}
+      function cleanLog() {
+        i = 0;
+        var log_panel = document.getElementById("log_panel");
+        log_panel.innerHTML = "";
+      }
+
+      function sdkInit() {
+        //初始化config配置
+        let config = {
+          url: wsAddr,
+          token: token,
+          infoLog: (info, type) => {
+            appendInfoLog(info, type);
+          },
+          errLog: (err) => {
+            console.log(err);
+          },
+        };
+        let callback = {
+          onConnect: () => {
+            document.getElementById("state").innerHTML = "已连接";
+          },
+
+          onDisconnect: () => {
+            document.getElementById("state").innerHTML = "断开连接";
+          },
+
+          onLogin: (data) => {
+            document.getElementById("state").innerHTML = "已登录";
+            document.getElementById("extNo").innerHTML = data.extNo;
+          },
+
+          onLogout: () => {
+            document.getElementById("state").innerHTML = "登出";
+            document.getElementById("extNo").innerHTML = "";
+          },
+
+          onReady: () => {
+            document.getElementById("state").innerHTML = "空闲";
+          },
+
+          onBusy: () => {
+            document.getElementById("state").innerHTML = "忙碌";
+          },
+
+          onRest: () => {
+            document.getElementById("state").innerHTML = "小休";
+          },
+
+          onRing: (data) => {
+            document.getElementById("state").innerHTML = "振铃中";
+            document.getElementById("info").innerHTML = data.popScreenNo;
+          },
+
+          onAnswer: (data) => {
+            if (data.direction === "OUTBOUND") {
+              document.getElementById("state").innerHTML = "外呼中";
+            } else {
+              document.getElementById("state").innerHTML = "通话中";
+            }
+          },
+
+          onCalleeAnswer: () => {
+            document.getElementById("state").innerHTML = "通话中";
+          },
+
+          onHangup: () => {
+            document.getElementById("state").innerHTML = "挂机";
+            document.getElementById("info").innerHTML = "";
+          },
+        };
+        ctibar = new Ctibar(config, callback);
+        ctibar.initSDK();
+      }
+
+      //拨打电话
+      function call() {
+        let called = document.getElementById("makecall").value;
+        ctibar.makecall(called);
+      }
+    </script>
+    <div>
+      <h3>1.获取Auth授权</h3>
+      <div>
+        <label>用户名</label>
+        <input id="username" type="text" value="admin" />
+      </div>
+      <div>
+        <label>密码</label>
+        <input
+          id="password"
+          type="password"
+          value="c33367701511b4f6020ec61ded352059"
+        />
+      </div>
+      <button onclick="auth()">获取授权</button>
+      <input id="token" style="width: 500px" type="text" value="" />
+    </div>
+
+    <div>
+      <h3>2.加载电话条</h3>
+      <div>
+        <p><label>分机号: </label><label id="extNo"></label></p>
+        <p><label>当前状态: </label><label id="state">未连接</label></p>
+        <p>
+          <label>持续时长:</label>
+        </p>
+        <p><lable>呼叫信息:</lable><label id="info"></label></p>
+        <p>
+          <button onclick="sdkInit()">初始化</button>
+        </p>
+        <p>
+          <button onclick="ctibar.login()">登录</button>
+          <button onclick="ctibar.logout()">登出</button>
+          <button onclick="ctibar.ready()">空闲</button>
+          <button onclick="ctibar.busy()">置忙</button>
+          <button onclick="ctibar.rest()">小休</button>
+        </p>
+        <p>
+          <input id="makecall" value="" />
+          <button onclick="call()">拨打</button>
+          <button onclick="ctibar.offhook()">摘机</button>
+          <button onclick="ctibar.hangup()">挂机</button>
+          <button onclick="ctibar.hold()">保持</button>
+          <button onclick="ctibar.unhold()">取消保持</button>
+        </p>
+        <p>
+          <input id="transferNo" value="" />
+          <button>转接</button>
+
+          <input id="transferQueue" value="" />
+          <button>转接技能组</button>
+        </p>
+        <p>
+          <input id="consult" value="" />
+          <button>咨询</button>
+          <button>咨询转</button>
+          <button>咨询取回</button>
+        </p>
+        <p>
+          <input id="meet" value="" />
+          <button>三方通话</button>
+        </p>
+        <p>
+          <input id="dtmf" value="" />
+          <button>DTMF</button>
+        </p>
+        <p>
+          <input id="satisfy" value="" />
+          <button>满意度</button>
+        </p>
+        <div>
+          <button onclick="appendInfoLog('test',1)">LOGTEST</button>
+          <button onclick="cleanLog()">清空日志</button>
+        </div>
+      </div>
+    </div>
+    <div
+      id="log_panel"
+      style="
+        width: 1100px;
+        height: 600px;
+        background: black;
+        position: fixed;
+        top: 30px;
+        right: 150px;
+        font-family: auto;
+        color: chartreuse;
+        padding-left: 10px;
+        overflow-y: scroll;
+        word-break: break-all;
+      "
+    ></div>
+  </body>
+</html>
