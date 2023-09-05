@@ -31,7 +31,7 @@ YWCC是一款基于FreeSWITCH开源软交换平台开发，拥有基本的分机
 
 默认账号: admin/654321
 
-集成CRM接口文档：[https://fxkatpi8d24.feishu.cn/wiki/JWBQw98h4ilQkvkDHUycbVmnn9f?from=from_copylink]
+集成CRM接口文档：[https://fxkatpi8d24.feishu.cn/wiki/JWBQw98h4ilQkvkDHUycbVmnn9f?from=from_copylink](https://fxkatpi8d24.feishu.cn/wiki/JWBQw98h4ilQkvkDHUycbVmnn9f?from=from_copylink)
 
 ### 环境部署
 
