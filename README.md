@@ -30,9 +30,14 @@ YWCC是一款基于FreeSWITCH开源软交换平台开发，拥有基本的分机
 
 演示地址：[https://demo.cdxxzz.com](https://demo.cdxxzz.com)
 
-默认账号: admin/654321
+默认账号: 
+admin/654321
+test01/123456
 
 集成CRM接口文档：[https://fxkatpi8d24.feishu.cn/wiki/JWBQw98h4ilQkvkDHUycbVmnn9f?from=from_copylink](https://fxkatpi8d24.feishu.cn/wiki/JWBQw98h4ilQkvkDHUycbVmnn9f?from=from_copylink)
+
+### 申明
++ CSDN卖源码链接是假的！！！ 请大家避坑： https://download.csdn.net/download/qq_41701956/87281028
 
 ### 环境部署
 
