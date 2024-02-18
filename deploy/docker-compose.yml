@@ -14,7 +14,7 @@ services:
       - "/usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro"
       - "./data/mysql:/var/lib/mysql"
   freeswitch:
-    image: registry.cn-hongkong.aliyuncs.com/dream-public/freeswitch:2022-11-10-18-13-44
+    image: registry.cn-beijing.aliyuncs.com/dream-public/freeswitch:2024-02-04-14-20-07
     ports:
       - "5060:5060"
       - "5060:5060/udp"
