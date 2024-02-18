@@ -47,7 +47,7 @@ services:
       - "/usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro"
       - "./data/redis:/data"
   cc:
-    image: registry.cn-beijing.aliyuncs.com/dream-public/cc:79383fb0
+    image: registry.cn-beijing.aliyuncs.com/dream-public/cc:658df0c5
     ports:
       - "9999:9999"
     volumes:
@@ -59,7 +59,7 @@ services:
       - mysql
       - redis
   front:
-    image: registry.cn-beijing.aliyuncs.com/dream-public/cc-front:53aec1b2
+    image: registry.cn-beijing.aliyuncs.com/dream-public/cc-front:f42c2264
     ports:
       - "8080:80"
     volumes:
