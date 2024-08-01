@@ -79,4 +79,4 @@ docker compose -d up
 
 
 ### 联系我们
-![image](images/connect.jpeg)
+![image](images/connect.jpeg){:width="300px" height="300px"}
